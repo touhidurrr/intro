@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Design tokens — Tailwind v4 generates all color/font utilities from these. */
+@theme {
+  --color-base: #0c1117;
+  --color-panel: #11181f;
+  --color-line: #222c37;
+  --color-fg: #dce4ec;
+  --color-dim: #87929e;
+  --color-accent: #5ca7ff;
+  --color-ok: #2ea870;
+  /* JSON syntax: strings green, numbers amber, keys take the accent. */
+  --color-str: #86c993;
+  --color-num: #e0b15e;
+
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Headline treatment: condensed Archivo via the wdth axis (font-stretch). */
+@utility display {
+  font-family: var(--font-display);
+  font-stretch: 72%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 0.96;
+}
+
+@layer base {
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
