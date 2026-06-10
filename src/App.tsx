@@ -3,10 +3,10 @@ import {
   identity,
   links,
   projects,
+  REQUESTS_PER_SECOND,
   roles,
   skills,
   stats,
-  REQUESTS_PER_SECOND,
 } from "./data";
 
 /* ------------------------------------------------------------------ */
@@ -151,10 +151,14 @@ function Endpoint({
 /* ------------------------------------------------------------------ */
 
 function Header() {
+  const host = useHostname();
+  const [label, suffix] = host.includes(".") ? host.split(".", 2) : [host, ""];
+
   return (
     <header className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-6 py-6">
       <a href="#top" className="font-mono text-sm font-medium tracking-tight">
-        touhidur<span className="text-accent">.bd</span>
+        {label}
+        {suffix ? <span className="text-accent">.{suffix}</span> : null}
         <span className="ml-3 text-[0.7rem] text-dim">API reference · v1</span>
       </a>
       <nav className="flex items-center gap-5 font-mono text-xs">
@@ -191,6 +195,17 @@ function Header() {
       </nav>
     </header>
   );
+}
+
+/** Safe hostname hook — falls back to touhidur.bd during SSR/build. */
+function useHostname() {
+  const [host, setHost] = useState(window?.location?.hostname ?? "touhidur.bd");
+
+  useEffect(() => {
+    setHost(window?.location?.hostname ?? host);
+  }, []);
+
+  return host;
 }
 
 function Root() {
@@ -367,6 +382,7 @@ function Skills() {
 }
 
 function Contact() {
+  const host = useHostname();
   return (
     <Endpoint
       verb="POST"
@@ -407,9 +423,8 @@ function Contact() {
           <ResponsePanel status="202 Accepted" meta="usually < 24h">
             <pre className="overflow-x-auto p-5 text-[0.78rem] leading-relaxed text-dim">
               <span className="text-ok">$</span> curl -X{" "}
-              <span className="text-num">POST</span> https://touhidur.bd/contact
-              \{"\n"}
-              {"    "}-d{" "}
+              <span className="text-num">POST</span> {`https://${host}/contact`}
+              {" \\\n       -d "}
               <span className="text-str">
                 '{"{"} "role": "backend", "remote": true {"}"}'
               </span>
