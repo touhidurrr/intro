@@ -1,3 +1,4 @@
+import punycode from "punycode";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   identity,
@@ -199,10 +200,14 @@ function Header() {
 
 /** Safe hostname hook — falls back to touhidur.bd during SSR/build. */
 function useHostname() {
-  const [host, setHost] = useState(window?.location?.hostname ?? "touhidur.bd");
+  const [host, setHost] = useState("touhidur.bd");
 
   useEffect(() => {
-    setHost(window?.location?.hostname ?? host);
+    try {
+      setHost(punycode.toUnicode(window.location.hostname));
+    } catch {
+      setHost(window?.location?.hostname ?? host);
+    }
   }, []);
 
   return host;
