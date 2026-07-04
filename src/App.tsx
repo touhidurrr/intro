@@ -236,9 +236,9 @@ function Root() {
           </h1>
           <p className="mt-6 max-w-xl leading-relaxed text-dim">
             Md. Touhidur Rahman — backend &amp; DevOps engineer and MongoDB
-            certified developer. Writing code since 2018, shipping for US and
-            Indian teams since 2022, and running one game server that hasn't
-            slept since January 2022.
+            certified developer. Writing code since 2018, shipping production
+            software worldwide since 2022, and running servers that hasn't slept
+            since 2022.
           </p>
           <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
             {stats.map((s) => (
