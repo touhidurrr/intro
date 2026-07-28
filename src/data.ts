@@ -19,7 +19,7 @@ export const identity = {
 export const stats = [
   { value: "100M+", label: "requests / month" },
   { value: "500K+", label: "users / month" },
-  { value: "480+", label: "GitHub stars" },
+  { value: "500+", label: "GitHub stars" },
   { value: "8 yrs", label: "coding since 2018" },
 ] as const;
 
