@@ -235,7 +235,7 @@ function Root() {
             that <span className="text-accent">stay up.</span>
           </h1>
           <p className="mt-6 max-w-xl leading-relaxed text-dim">
-            Md. Touhidur Rahman — backend &amp; DevOps engineer and MongoDB
+            Md. Touhidur Rahman — Backend &amp; DevOps engineer and MongoDB
             certified developer. Writing code since 2018, shipping production
             software worldwide since 2022, and running servers that hasn't slept
             since 2022.
