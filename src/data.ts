@@ -132,4 +132,4 @@ export const skills: { group: string; items: string }[] = [
 ];
 
 /** ~100M requests/month across production systems ≈ 38 per second. */
-export const REQUESTS_PER_SECOND = 100_000_000 / (3600 * 24 * 365.2425);
+export const REQUESTS_PER_SECOND = 100_000_000 / (3600 * 24 * 30);
