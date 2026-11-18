@@ -1,7 +1,7 @@
 export const links = {
   email: "mailto:me@touhidur.bd",
   github: "https://github.com/touhidurrr",
-  linkedin: "https://linkedin.com/in/touhidurrr",
+  linkedin: "https://linkedin.com/in/touhidurrr/",
   resume: "https://touhidur.bd/resume",
   whatsapp: "https://wa.me/8801794522043",
 } as const;
