@@ -87,8 +87,18 @@ export interface Project {
   name: string;
   url: string;
   metrics:
-    | { kind: "github"; stars: string; forks: string }
-    | { kind: "npm"; downloads: string; period: string };
+    | {
+        kind: "github";
+        repository: string;
+        stars: number;
+        forks: number;
+      }
+    | {
+        kind: "npm";
+        packageName: string;
+        downloads: number;
+        period: "week";
+      };
   desc: string;
 }
 
@@ -96,19 +106,34 @@ export const projects: Project[] = [
   {
     name: "iplist-youtube",
     url: "https://github.com/touhidurrr/iplist-youtube",
-    metrics: { kind: "github", stars: "422", forks: "54" },
+    metrics: {
+      kind: "github",
+      repository: "touhidurrr/iplist-youtube",
+      stars: 422,
+      forks: 54,
+    },
     desc: "Continuously updated registry of all YouTube IP ranges, used in router and firewall configs worldwide.",
   },
   {
     name: "better-status-codes",
     url: "https://www.npmjs.com/package/better-status-codes",
-    metrics: { kind: "npm", downloads: "12K+", period: "month" },
+    metrics: {
+      kind: "npm",
+      packageName: "better-status-codes",
+      downloads: 49775,
+      period: "week",
+    },
     desc: "Zero-dependency TypeScript library for type-safe HTTP status codes.",
   },
   {
     name: "mirrorTouhidurrr",
     url: "https://github.com/touhidurrr/mirrorTouhidurrr",
-    metrics: { kind: "github", stars: "43", forks: "45" },
+    metrics: {
+      kind: "github",
+      repository: "touhidurrr/mirrorTouhidurrr",
+      stars: 43,
+      forks: 45,
+    },
     desc: "Web proxy built on Cloudflare Workers, deployed at the edge.",
   },
 ];

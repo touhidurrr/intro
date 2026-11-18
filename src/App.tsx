@@ -46,6 +46,7 @@ import {
 } from "react-icons/si";
 import { TbApi, TbFileTypeSql, TbPlugConnected } from "react-icons/tb";
 import { VscTerminalPowershell } from "react-icons/vsc";
+import { fetchProjectMetrics } from "./api";
 import {
   identity,
   links,
@@ -533,14 +534,36 @@ function Experience() {
 }
 
 function Projects() {
+  const [currentProjects, setCurrentProjects] = useState(projects);
+
+  useEffect(() => {
+    let active = true;
+
+    void fetchProjectMetrics().then(
+      (updatedProjects) => {
+        if (active) setCurrentProjects(updatedProjects);
+      },
+      (error: unknown) => {
+        console.error(
+          "Could not load live project metrics; keeping fallback values.",
+          error,
+        );
+      },
+    );
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <Endpoint
       verb="GET"
       path="/projects"
-      summary="Open source, in production, with real users. Star counts verified against the GitHub API."
+      summary="Open source, in production, with real users. Live metrics from GitHub and npm."
     >
       <div className="border-line bg-line grid gap-px overflow-hidden rounded-xl border md:grid-cols-3">
-        {projects.map((p) => (
+        {currentProjects.map((p) => (
           <a
             key={p.name}
             href={p.url}
@@ -554,17 +577,18 @@ function Projects() {
                   <>
                     <span className="inline-flex items-center gap-1">
                       <FaStar aria-hidden="true" className="size-3.5" />
-                      {p.metrics.stars} stars
+                      {p.metrics.stars.toLocaleString("en-US")} stars
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <FaCodeFork aria-hidden="true" className="size-3.5" />
-                      {p.metrics.forks} forks
+                      {p.metrics.forks.toLocaleString("en-US")} forks
                     </span>
                   </>
                 ) : (
                   <span className="inline-flex items-center gap-1">
                     <FaDownload aria-hidden="true" className="size-3.5" />
-                    {p.metrics.downloads} downloads / {p.metrics.period}
+                    {p.metrics.downloads.toLocaleString("en-US")} downloads /{" "}
+                    {p.metrics.period}
                   </span>
                 )}
               </div>
