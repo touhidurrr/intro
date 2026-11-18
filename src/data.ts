@@ -86,7 +86,9 @@ export const roles: Role[] = [
 export interface Project {
   name: string;
   url: string;
-  metric: string;
+  metrics:
+    | { kind: "github"; stars: string; forks: string }
+    | { kind: "npm"; downloads: string; period: string };
   desc: string;
 }
 
@@ -94,19 +96,19 @@ export const projects: Project[] = [
   {
     name: "iplist-youtube",
     url: "https://github.com/touhidurrr/iplist-youtube",
-    metric: "★ 394 · 56 forks",
+    metrics: { kind: "github", stars: "422", forks: "54" },
     desc: "Continuously updated registry of all YouTube IP ranges, used in router and firewall configs worldwide.",
   },
   {
     name: "better-status-codes",
     url: "https://www.npmjs.com/package/better-status-codes",
-    metric: "12K+ npm downloads / month",
+    metrics: { kind: "npm", downloads: "12K+", period: "month" },
     desc: "Zero-dependency TypeScript library for type-safe HTTP status codes.",
   },
   {
     name: "mirrorTouhidurrr",
     url: "https://github.com/touhidurrr/mirrorTouhidurrr",
-    metric: "★ 41 · 38 forks",
+    metrics: { kind: "github", stars: "43", forks: "45" },
     desc: "Web proxy built on Cloudflare Workers, deployed at the edge.",
   },
 ];

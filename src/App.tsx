@@ -1,5 +1,51 @@
 import punycode from "punycode";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import type { IconType } from "react-icons";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
+import {
+  FaAws,
+  FaEnvelope,
+  FaGithub,
+  FaLinkedin,
+  FaWhatsapp,
+} from "react-icons/fa";
+import {
+  FaClock,
+  FaCode,
+  FaCodeBranch,
+  FaCodeFork,
+  FaDownload,
+  FaServer,
+  FaStar,
+  FaUsers,
+} from "react-icons/fa6";
+import {
+  SiBun,
+  SiCloudflare,
+  SiDocker,
+  SiExpress,
+  SiGithubactions,
+  SiGooglecloud,
+  SiHtml5,
+  SiJavascript,
+  SiJest,
+  SiMariadb,
+  SiMongodb,
+  SiMongoose,
+  SiNestjs,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiNpm,
+  SiPostgresql,
+  SiPrisma,
+  SiPuppeteer,
+  SiReact,
+  SiTailwindcss,
+  SiTauri,
+  SiTypescript,
+} from "react-icons/si";
+import { TbApi, TbFileTypeSql, TbPlugConnected } from "react-icons/tb";
+import { VscTerminalPowershell } from "react-icons/vsc";
 import {
   identity,
   links,
@@ -10,6 +56,52 @@ import {
   stats,
 } from "./data";
 
+const technologyIcons: Record<string, IconType> = {
+  TypeScript: SiTypescript,
+  JavaScript: SiJavascript,
+  SQL: TbFileTypeSql,
+  Shell: VscTerminalPowershell,
+  "HTML/CSS": SiHtml5,
+  "Node.js": SiNodedotjs,
+  Bun: SiBun,
+  NestJS: SiNestjs,
+  Express: SiExpress,
+  REST: TbApi,
+  WebSocket: TbPlugConnected,
+  PostgreSQL: SiPostgresql,
+  MongoDB: SiMongodb,
+  MariaDB: SiMariadb,
+  Prisma: SiPrisma,
+  Mongoose: SiMongoose,
+  AWS: FaAws,
+  GCP: SiGooglecloud,
+  Cloudflare: SiCloudflare,
+  Docker: SiDocker,
+  "GitHub Actions": SiGithubactions,
+  "CI/CD": FaCodeBranch,
+  Jest: SiJest,
+  React: SiReact,
+  "Next.js": SiNextdotjs,
+  "React Native": SiReact,
+  Tauri: SiTauri,
+  "Tailwind CSS": SiTailwindcss,
+  Puppeteer: SiPuppeteer,
+};
+
+const statIcons: Record<(typeof stats)[number]["label"], IconType> = {
+  "requests / month": FaServer,
+  "users / month": FaUsers,
+  "GitHub stars": FaStar,
+  "coding since 2018": FaCode,
+};
+
+type TechnologyLogoAsset = { src: string; width: 64 | 128 };
+
+const technologyLogos: Record<string, TechnologyLogoAsset> = {
+  ElysiaJS: { src: "/icons/elysia.svg", width: 64 },
+  BullMQ: { src: "/icons/bullmq.png", width: 128 },
+};
+
 /* ------------------------------------------------------------------ */
 /* live metric                                                          */
 /* ------------------------------------------------------------------ */
@@ -17,17 +109,15 @@ import {
 /** Requests served across production systems since the page was opened. */
 function useRequestTicker(): number {
   const [count, setCount] = useState(0);
-  const start = useRef<number | null>(null);
 
   useEffect(() => {
-    let frame: number;
-    const tick = (t: number) => {
-      start.current ??= t;
-      setCount(Math.floor(((t - start.current) / 1000) * REQUESTS_PER_SECOND));
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const started = performance.now();
+    const interval = window.setInterval(() => {
+      const elapsedSeconds = (performance.now() - started) / 1000;
+      setCount(Math.floor(elapsedSeconds * REQUESTS_PER_SECOND));
+    }, 100);
+
+    return () => window.clearInterval(interval);
   }, []);
 
   return count;
@@ -122,6 +212,86 @@ function Method({ verb }: { verb: "GET" | "POST" }) {
   );
 }
 
+function TechnologyLogo({ asset }: { asset: TechnologyLogoAsset }) {
+  const maskId = `technology-logo-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const logoClassName =
+    asset.width === 128
+      ? "inline-block h-2 w-4 shrink-0 align-[-0.125em]"
+      : "inline-block size-3.5 shrink-0 align-[-0.125em]";
+
+  return (
+    <svg
+      aria-hidden="true"
+      className={logoClassName}
+      viewBox={`0 0 ${asset.width} 64`}
+    >
+      <mask id={maskId}>
+        <image href={asset.src} width={asset.width} height="64" />
+      </mask>
+      <rect
+        width={asset.width}
+        height="64"
+        fill="currentColor"
+        mask={`url(#${maskId})`}
+      />
+    </svg>
+  );
+}
+
+function Technology({ name }: { name: string }) {
+  const Icon = technologyIcons[name];
+  const logo = technologyLogos[name];
+
+  return (
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+      {logo ? (
+        <TechnologyLogo asset={logo} />
+      ) : Icon ? (
+        <Icon
+          aria-hidden="true"
+          className="inline-block size-3.5 shrink-0 align-[-0.125em]"
+        />
+      ) : null}
+      {name}
+    </span>
+  );
+}
+
+function SkillsJsonBody() {
+  return (
+    <pre className="text-dim overflow-x-auto p-5 font-mono text-[0.78rem] leading-relaxed">
+      {"{\n"}
+      {skills.map((skill, index) => {
+        const key = skill.group
+          .toLowerCase()
+          .replace(/ & /g, "_and_")
+          .replace(/ /g, "_");
+        const items = skill.items.split(", ");
+
+        return (
+          <span key={skill.group}>
+            {"  "}
+            <span className="text-accent">{JSON.stringify(key)}</span>:{" "}
+            <span className="text-str">
+              {'"'}
+              {items.map((name, itemIndex) => (
+                <span key={name}>
+                  <Technology name={name} />
+                  {itemIndex < items.length - 1 ? ", " : ""}
+                </span>
+              ))}
+              {'"'}
+            </span>
+            {index < skills.length - 1 ? "," : ""}
+            {"\n"}
+          </span>
+        );
+      })}
+      {"}"}
+    </pre>
+  );
+}
+
 function Endpoint({
   verb,
   path,
@@ -169,7 +339,10 @@ function Header() {
           target="_blank"
           rel="noreferrer"
         >
-          GitHub
+          <span className="flex items-center gap-1.5">
+            <FaGithub aria-hidden="true" className="size-4 shrink-0" />
+            GitHub
+          </span>
         </a>
         <a
           className="hover:text-accent"
@@ -177,7 +350,10 @@ function Header() {
           target="_blank"
           rel="noreferrer"
         >
-          LinkedIn
+          <span className="flex items-center gap-1.5">
+            <FaLinkedin aria-hidden="true" className="size-4 shrink-0" />
+            LinkedIn
+          </span>
         </a>
         <a
           className="hover:text-accent"
@@ -185,12 +361,19 @@ function Header() {
           target="_blank"
           rel="noreferrer"
         >
-          Resume
+          <span className="flex items-center gap-1.5">
+            <BsFileEarmarkPdfFill
+              aria-hidden="true"
+              className="size-4 shrink-0"
+            />
+            Resume
+          </span>
         </a>
         <a
-          className="bg-accent hover:bg-fg rounded-full px-4 py-2 text-base font-medium transition-colors"
+          className="bg-accent hover:bg-fg flex items-center gap-2 rounded-full px-4 py-2 text-base font-medium transition-colors"
           href={links.email}
         >
+          <FaEnvelope aria-hidden="true" className="size-4 shrink-0" />
           Email me
         </a>
       </nav>
@@ -203,11 +386,7 @@ function useHostname() {
   const [host, setHost] = useState("touhidur.bd");
 
   useEffect(() => {
-    try {
-      setHost(punycode.toUnicode(window.location.hostname));
-    } catch {
-      setHost(window?.location?.hostname ?? host);
-    }
+    setHost(punycode.toUnicode(window.location.hostname));
   }, []);
 
   return host;
@@ -235,20 +414,31 @@ function Root() {
             that <span className="text-accent">stay up.</span>
           </h1>
           <p className="text-dim mt-6 max-w-xl leading-relaxed">
-            Md. Touhidur Rahman — Backend &amp; DevOps engineer and MongoDB
+            Md. Touhidur Rahman — Backend &amp; DevOps engineer and
+            <span className="inline-flex items-center">
+              <SiMongodb aria-hidden="true" className="m-0.5" />
+              MongoDB
+            </span>
             certified developer. Writing code since 2018, shipping production
             software worldwide since 2022, and running servers that hasn't slept
             since 2022.
           </p>
           <dl className="border-line bg-line mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border">
-            {stats.map((s) => (
-              <div key={s.label} className="bg-panel p-5">
-                <dt className="text-dim font-mono text-[0.65rem] tracking-widest uppercase">
-                  {s.label}
-                </dt>
-                <dd className="display text-fg mt-1 text-3xl">{s.value}</dd>
-              </div>
-            ))}
+            {stats.map((s) => {
+              const Icon = statIcons[s.label];
+
+              return (
+                <div key={s.label} className="bg-panel p-5">
+                  <dt className="text-dim font-mono text-[0.65rem] tracking-widest uppercase">
+                    {s.label}
+                  </dt>
+                  <dd className="display text-fg mt-1 flex items-center gap-2 text-3xl">
+                    <Icon aria-hidden="true" className="size-5 shrink-0" />
+                    {s.value}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
         </div>
 
@@ -324,9 +514,16 @@ function Experience() {
                   </li>
                 ))}
               </ul>
-              <p className="text-dim mt-4 font-mono text-xs">
-                {r.stack.join(" · ")}
-              </p>
+              <div className="text-dim mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs">
+                {r.stack.map((name, index) => (
+                  <span key={name} className="inline-flex items-center gap-3">
+                    <Technology name={name} />
+                    {index < r.stack.length - 1 ? (
+                      <span aria-hidden="true">·</span>
+                    ) : null}
+                  </span>
+                ))}
+              </div>
             </div>
           </article>
         ))}
@@ -351,7 +548,38 @@ function Projects() {
             rel="noreferrer"
             className="group bg-panel hover:bg-line/50 p-6 transition-colors"
           >
-            <p className="text-num font-mono text-xs">{p.metric}</p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-num flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
+                {p.metrics.kind === "github" ? (
+                  <>
+                    <span className="inline-flex items-center gap-1">
+                      <FaStar aria-hidden="true" className="size-3.5" />
+                      {p.metrics.stars} stars
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <FaCodeFork aria-hidden="true" className="size-3.5" />
+                      {p.metrics.forks} forks
+                    </span>
+                  </>
+                ) : (
+                  <span className="inline-flex items-center gap-1">
+                    <FaDownload aria-hidden="true" className="size-3.5" />
+                    {p.metrics.downloads} downloads / {p.metrics.period}
+                  </span>
+                )}
+              </div>
+              {p.metrics.kind === "github" ? (
+                <FaGithub
+                  aria-hidden="true"
+                  className="text-dim size-4 shrink-0"
+                />
+              ) : (
+                <SiNpm
+                  aria-hidden="true"
+                  className="text-dim size-5 shrink-0"
+                />
+              )}
+            </div>
             <h3 className="text-fg mt-2 font-mono text-sm font-bold">
               /projects/<span className="text-accent">{p.name}</span>
             </h3>
@@ -364,13 +592,6 @@ function Projects() {
 }
 
 function Skills() {
-  const payload = Object.fromEntries(
-    skills.map((s) => [
-      s.group.toLowerCase().replace(/ & /g, "_and_").replace(/ /g, "_"),
-      s.items,
-    ]),
-  );
-
   return (
     <Endpoint
       verb="GET"
@@ -379,7 +600,7 @@ function Skills() {
     >
       <div className="max-w-2xl">
         <ResponsePanel>
-          <JsonBody data={payload} />
+          <SkillsJsonBody />
         </ResponsePanel>
       </div>
     </Endpoint>
@@ -401,26 +622,32 @@ function Contact() {
           </h2>
           <div className="mt-8 flex flex-wrap gap-4 font-mono text-sm">
             <a
-              className="bg-accent hover:bg-fg rounded-full px-5 py-2.5 text-base font-medium transition-colors"
+              className="bg-accent hover:bg-fg flex items-center gap-2 rounded-full px-5 py-2.5 text-base font-medium transition-colors"
               href={links.email}
             >
+              <FaEnvelope aria-hidden="true" className="size-4 shrink-0" />
               me@touhidur.bd
             </a>
             <a
-              className="border-line hover:border-accent hover:text-accent rounded-full border px-5 py-2.5 transition-colors"
+              className="border-line hover:border-accent hover:text-accent flex items-center gap-2 rounded-full border px-5 py-2.5 transition-colors"
               href={links.whatsapp}
               target="_blank"
               rel="noreferrer"
             >
+              <FaWhatsapp aria-hidden="true" className="size-4 shrink-0" />
               WhatsApp
             </a>
             <a
-              className="border-line hover:border-accent hover:text-accent rounded-full border px-5 py-2.5 transition-colors"
+              className="border-line hover:border-accent hover:text-accent flex items-center gap-2 rounded-full border px-5 py-2.5 transition-colors"
               href={links.resume}
               target="_blank"
               rel="noreferrer"
             >
-              Resume (PDF)
+              <BsFileEarmarkPdfFill
+                aria-hidden="true"
+                className="size-4 shrink-0"
+              />
+              Resume
             </a>
           </div>
         </div>
@@ -447,10 +674,18 @@ function Footer() {
       <div className="text-dim mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-6 font-mono text-xs">
         <span>© {new Date().getFullYear()} Md. Touhidur Rahman</span>
         <span className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span>main</span>
-          <span>TypeScript 6</span>
-          <span>Bun</span>
-          <span>UTC+6</span>
+          <span className="inline-flex items-center gap-1.5">
+            <FaCodeBranch aria-hidden="true" className="size-3.5" />
+            main
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Technology name="TypeScript" />6
+          </span>
+          <Technology name="Bun" />
+          <span className="inline-flex items-center gap-1.5">
+            <FaClock aria-hidden="true" className="size-3.5" />
+            UTC+6
+          </span>
           <span className="text-ok flex items-center gap-2">
             <span
               className="bg-ok inline-block h-1.5 w-1.5 rounded-full"
