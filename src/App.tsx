@@ -79,7 +79,7 @@ function JsonBody({ data }: { data: unknown }) {
     [data],
   );
   return (
-    <pre className="overflow-x-auto p-5 font-mono text-[0.78rem] leading-relaxed text-dim">
+    <pre className="text-dim overflow-x-auto p-5 font-mono text-[0.78rem] leading-relaxed">
       {nodes}
     </pre>
   );
@@ -96,8 +96,8 @@ function ResponsePanel({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-panel">
-      <div className="flex items-center justify-between border-b border-line px-5 py-2.5 font-mono text-[0.7rem]">
+    <div className="border-line bg-panel overflow-hidden rounded-xl border">
+      <div className="border-line flex items-center justify-between border-b px-5 py-2.5 font-mono text-[0.7rem]">
         <span className="text-ok">{status}</span>
         <span className="text-dim">{meta}</span>
       </div>
@@ -134,13 +134,13 @@ function Endpoint({
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-line">
+    <section className="border-line border-t">
       <div className="mx-auto max-w-5xl px-6 py-16">
         <header className="flex flex-wrap items-center gap-3 font-mono">
           <Method verb={verb} />
-          <h2 className="text-base font-bold text-fg">{path}</h2>
+          <h2 className="text-fg text-base font-bold">{path}</h2>
         </header>
-        <p className="mt-2 max-w-2xl text-sm text-dim">{summary}</p>
+        <p className="text-dim mt-2 max-w-2xl text-sm">{summary}</p>
         <div className="mt-8">{children}</div>
       </div>
     </section>
@@ -160,7 +160,7 @@ function Header() {
       <a href="#top" className="font-mono text-sm font-medium tracking-tight">
         {label}
         {suffix ? <span className="text-accent">.{suffix}</span> : null}
-        <span className="ml-3 text-[0.7rem] text-dim">API reference · v1</span>
+        <span className="text-dim ml-3 text-[0.7rem]">API reference · v1</span>
       </a>
       <nav className="flex items-center gap-5 font-mono text-xs">
         <a
@@ -188,7 +188,7 @@ function Header() {
           Resume
         </a>
         <a
-          className="rounded-full bg-accent px-4 py-2 font-medium text-base transition-colors hover:bg-fg"
+          className="bg-accent hover:bg-fg rounded-full px-4 py-2 text-base font-medium transition-colors"
           href={links.email}
         >
           Email me
@@ -218,10 +218,10 @@ function Root() {
 
   return (
     <section id="top" className="mx-auto max-w-5xl px-6 pt-14 pb-16 sm:pt-20">
-      <p className="flex items-center gap-3 font-mono text-[0.72rem] tracking-[0.14em] text-dim">
+      <p className="text-dim flex items-center gap-3 font-mono text-[0.72rem] tracking-[0.14em]">
         <span className="relative flex size-2.5" aria-hidden="true">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ok opacity-70 motion-reduce:hidden" />
-          <span className="relative inline-flex size-2.5 rounded-full bg-ok" />
+          <span className="bg-ok absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 motion-reduce:hidden" />
+          <span className="bg-ok relative inline-flex size-2.5 rounded-full" />
         </span>
         <span className="text-ok">all systems operational</span> · uptime is the
         portfolio
@@ -234,30 +234,30 @@ function Root() {
             <br />
             that <span className="text-accent">stay up.</span>
           </h1>
-          <p className="mt-6 max-w-xl leading-relaxed text-dim">
+          <p className="text-dim mt-6 max-w-xl leading-relaxed">
             Md. Touhidur Rahman — Backend &amp; DevOps engineer and MongoDB
             certified developer. Writing code since 2018, shipping production
             software worldwide since 2022, and running servers that hasn't slept
             since 2022.
           </p>
-          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
+          <dl className="border-line bg-line mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border">
             {stats.map((s) => (
               <div key={s.label} className="bg-panel p-5">
-                <dt className="font-mono text-[0.65rem] tracking-widest text-dim uppercase">
+                <dt className="text-dim font-mono text-[0.65rem] tracking-widest uppercase">
                   {s.label}
                 </dt>
-                <dd className="display mt-1 text-3xl text-fg">{s.value}</dd>
+                <dd className="display text-fg mt-1 text-3xl">{s.value}</dd>
               </div>
             ))}
           </dl>
         </div>
 
         <div className="min-w-0 font-mono">
-          <p className="mb-3 flex items-center gap-3 text-xs text-dim">
-            <Method verb="GET" /> <span className="font-bold text-fg">/</span>
+          <p className="text-dim mb-3 flex items-center gap-3 text-xs">
+            <Method verb="GET" /> <span className="text-fg font-bold">/</span>
           </p>
           <ResponsePanel>
-            <div className="border-b border-line px-5 py-3 text-[0.72rem] leading-relaxed text-dim">
+            <div className="border-line text-dim border-b px-5 py-3 text-[0.72rem] leading-relaxed">
               <p>
                 x-served-from:{" "}
                 <span className="text-str">
@@ -294,15 +294,15 @@ function Experience() {
             key={r.org}
             className="grid gap-4 sm:grid-cols-[190px_1fr] sm:gap-10"
           >
-            <div className="font-mono text-xs leading-relaxed text-dim">
-              <p className="font-bold text-fg">{r.period}</p>
+            <div className="text-dim font-mono text-xs leading-relaxed">
+              <p className="text-fg font-bold">{r.period}</p>
               <p>{r.place}</p>
             </div>
             <div>
-              <h3 className="font-mono text-sm text-dim">
+              <h3 className="text-dim font-mono text-sm">
                 /experience/
                 <a
-                  className="font-bold text-accent underline decoration-line underline-offset-4 hover:decoration-accent"
+                  className="text-accent decoration-line hover:decoration-accent font-bold underline underline-offset-4"
                   href={r.orgUrl}
                   target="_blank"
                   rel="noreferrer"
@@ -313,18 +313,18 @@ function Experience() {
               <p className="display mt-1.5 text-2xl">
                 {r.title} · {r.org}
               </p>
-              <ul className="mt-4 max-w-2xl space-y-2 text-[0.95rem] leading-relaxed text-fg/90">
+              <ul className="text-fg/90 mt-4 max-w-2xl space-y-2 text-[0.95rem] leading-relaxed">
                 {r.notes.map((n) => (
                   <li key={n} className="flex gap-3">
                     <span
-                      className="mt-[0.55rem] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-accent/70"
+                      className="bg-accent/70 mt-[0.55rem] inline-block h-1.5 w-1.5 shrink-0 rounded-full"
                       aria-hidden="true"
                     />
                     {n}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 font-mono text-xs text-dim">
+              <p className="text-dim mt-4 font-mono text-xs">
                 {r.stack.join(" · ")}
               </p>
             </div>
@@ -342,20 +342,20 @@ function Projects() {
       path="/projects"
       summary="Open source, in production, with real users. Star counts verified against the GitHub API."
     >
-      <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-3">
+      <div className="border-line bg-line grid gap-px overflow-hidden rounded-xl border md:grid-cols-3">
         {projects.map((p) => (
           <a
             key={p.name}
             href={p.url}
             target="_blank"
             rel="noreferrer"
-            className="group bg-panel p-6 transition-colors hover:bg-line/50"
+            className="group bg-panel hover:bg-line/50 p-6 transition-colors"
           >
-            <p className="font-mono text-xs text-num">{p.metric}</p>
-            <h3 className="mt-2 font-mono text-sm font-bold text-fg">
+            <p className="text-num font-mono text-xs">{p.metric}</p>
+            <h3 className="text-fg mt-2 font-mono text-sm font-bold">
               /projects/<span className="text-accent">{p.name}</span>
             </h3>
-            <p className="mt-3 text-sm leading-relaxed text-dim">{p.desc}</p>
+            <p className="text-dim mt-3 text-sm leading-relaxed">{p.desc}</p>
           </a>
         ))}
       </div>
@@ -401,13 +401,13 @@ function Contact() {
           </h2>
           <div className="mt-8 flex flex-wrap gap-4 font-mono text-sm">
             <a
-              className="rounded-full bg-accent px-5 py-2.5 font-medium text-base transition-colors hover:bg-fg"
+              className="bg-accent hover:bg-fg rounded-full px-5 py-2.5 text-base font-medium transition-colors"
               href={links.email}
             >
               me@touhidur.bd
             </a>
             <a
-              className="rounded-full border border-line px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
+              className="border-line hover:border-accent hover:text-accent rounded-full border px-5 py-2.5 transition-colors"
               href={links.whatsapp}
               target="_blank"
               rel="noreferrer"
@@ -415,7 +415,7 @@ function Contact() {
               WhatsApp
             </a>
             <a
-              className="rounded-full border border-line px-5 py-2.5 transition-colors hover:border-accent hover:text-accent"
+              className="border-line hover:border-accent hover:text-accent rounded-full border px-5 py-2.5 transition-colors"
               href={links.resume}
               target="_blank"
               rel="noreferrer"
@@ -426,7 +426,7 @@ function Contact() {
         </div>
         <div className="min-w-0 font-mono">
           <ResponsePanel status="202 Accepted" meta="usually < 24h">
-            <pre className="overflow-x-auto p-5 text-[0.78rem] leading-relaxed text-dim">
+            <pre className="text-dim overflow-x-auto p-5 text-[0.78rem] leading-relaxed">
               <span className="text-ok">$</span> curl -X{" "}
               <span className="text-num">POST</span> {`https://${host}/contact`}
               {" \\\n       -d "}
@@ -443,17 +443,17 @@ function Contact() {
 
 function Footer() {
   return (
-    <footer className="border-t border-line">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-6 font-mono text-xs text-dim">
+    <footer className="border-line border-t">
+      <div className="text-dim mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-6 font-mono text-xs">
         <span>© {new Date().getFullYear()} Md. Touhidur Rahman</span>
         <span className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span>main</span>
           <span>TypeScript 6</span>
           <span>Bun</span>
           <span>UTC+6</span>
-          <span className="flex items-center gap-2 text-ok">
+          <span className="text-ok flex items-center gap-2">
             <span
-              className="inline-block h-1.5 w-1.5 rounded-full bg-ok"
+              className="bg-ok inline-block h-1.5 w-1.5 rounded-full"
               aria-hidden="true"
             />
             operational
